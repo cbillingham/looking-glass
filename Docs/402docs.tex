@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+
+
+\usepackage{geometry}
+\geometry{letterpaper}
+
+
+\usepackage{doc}
+\usepackage{cite}
+\usepackage[margin=1cm]{caption}
+
+
+\usepackage{url}
+
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+
+\title{Camera Capture for Maya}
+\author{Cameron Billingham}
+\date{January 19, 2016}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\pagebreak
+\tableofcontents
+
+
+
+\pagebreak
+
+
+\section{Project Proposal}
+\subsection{Preliminary Proposals}
+
+\begin{enumerate}
+\item
+An application that allows Maya users to view viewport renders in real-time on their iPad or iPhone and allows them to manipulate the camera using the gyroscope and accelerometer on the device. The application will allow the user to connect the mobile device to the computer running Maya over Wi-Fi.
+\item
+An application that allows users to stream audio from their device to other Bluetooth devices in sync. The application allows connection to multiple Bluetooth devices including other devices with the application and stream whatever they are currently listening to to another device.
+\item
+A WebGL program that shows the manipulation and creation of a view frustum and projection. This tool would be used to allow students to see the render box of graphics scene to better understand the idea of a orthographic and projection matrix.
+\end{enumerate}
+
+\subsection{Proposal Document}
+
+
+
+\bibliography{402}{}
+\bibliographystyle{plain}
+
+\end{document}
