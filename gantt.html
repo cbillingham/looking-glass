@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Looking Glass GANTT Schedule</title>
+        <meta charset="utf-8">
+        <link href="http://taitems.github.io/jQuery.Gantt/css/style.css" type="text/css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <style type="text/css">
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 13px;
+                padding: 0 0 50px 0;
+            }
+            .contain {
+                width: 800px;
+                margin: 0 auto;
+            }
+            h1 {
+                margin: 40px 0 20px 0;
+            }
+            h2 {
+                font-size: 1.5em;
+                padding-bottom: 3px;
+                border-bottom: 1px solid #DDD;
+                margin-top: 50px;
+                margin-bottom: 25px;
+            }
+            table th:first-child {
+                width: 150px;
+            }
+      /* Bootstrap 3.x re-reset */
+      .fn-gantt *,
+      .fn-gantt *:after,
+      .fn-gantt *:before {
+        -webkit-box-sizing: content-box;
+           -moz-box-sizing: content-box;
+                box-sizing: content-box;
+      }
+        </style>
+    </head>
+    <body>
+<div class="gantt"></div>
+
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="http://taitems.github.io/jQuery.Gantt/js/jquery.fn.gantt.js"></script>
+<script>
+    $(function() {
+
+        "use strict";
+
+        $(".gantt").gantt({
+            source: [{
+                name: "Planning",
+                desc: "Initial Planning",
+                values: [{
+                    from: Date.UTC(2016, 0, 13),
+                    to: Date.UTC(2016, 0, 25),
+                    label: "Initial Planning",
+                    customClass: "ganttRed"
+                }]
+            },{
+                name: " ",
+                desc: "Maya API Research",
+                values: [{
+                    from: Date.UTC(2016, 0, 25),
+                    to: Date.UTC(2016, 1, 30),
+                    label: "Maya API Research",
+                    customClass: "ganttRed"
+                }]
+            },{
+                name: " ",
+                desc: "Mobile Device Pose Tests",
+                values: [{
+                    from: Date.UTC(2016, 1, 8),
+                    to: Date.UTC(2016, 1, 30),
+                    label: "Mobile Device Pose Tests",
+                    customClass: "ganttRed"
+                }]
+            },{
+                name: " ",
+                desc: "Socket/Port Research",
+                values: [{
+                    from: Date.UTC(2016, 1, 20),
+                    to: Date.UTC(2016, 1, 28),
+                    label: "Socket/Port Research",
+                    customClass: "ganttRed"
+                }]
+            },{
+                name: "Maya Server",
+                desc: "CommandPort Interface",
+                values: [{
+                    from: Date.UTC(2016, 1, 10),
+                    to: Date.UTC(2016, 1, 15),
+                    label: "CommandPort Interface",
+                    customClass: "ganttBlue"
+                }]
+            },{
+                name: " ",
+                desc: "Threaded Device Node",
+                values: [{
+                    from: Date.UTC(2016, 1, 20),
+                    to: Date.UTC(2016, 2, 30),
+                    label: "Threaded Device Node",
+                    customClass: "ganttBlue"
+                }]
+            },{
+                name: " ",
+                desc: "Camera Command Server",
+                values: [{
+                    from: Date.UTC(2016, 2, 15),
+                    to: Date.UTC(2016, 3, 10),
+                    label: "Camera Command Server",
+                    customClass: "ganttBlue"
+                }]
+            },{
+                name: " ",
+                desc: "Camera Video Streaming",
+                values: [{
+                    from: Date.UTC(2016, 3, 1),
+                    to: Date.UTC(2016, 4, 1),
+                    label: "Camera View Streaming",
+                    customClass: "ganttBlue"
+                }]
+            },{
+                name: "Mobile Device App",
+                desc: "iOS CoreMotionApp",
+                values: [{
+                    from: Date.UTC(2016, 2, 1),
+                    to: Date.UTC(2016, 2, 5),
+                    label: "iOS CoreMotionApp",
+                    customClass: "ganttGreen"
+                }]
+            },{
+                name: " ",
+                desc: "Tango Pose HelloWorld",
+                values: [{
+                    from: Date.UTC(2016, 2, 1),
+                    to: Date.UTC(2016, 2, 10),
+                    label: "Tango Pose HelloWorld",
+                    customClass: "ganttGreen"
+                }]
+            },{
+                name: " ",
+                desc: "Tango Connect to Maya",
+                values: [{
+                    from: Date.UTC(2016, 2, 20),
+                    to: Date.UTC(2016, 3, 10),
+                    label: "Tango Connect to Maya",
+                    customClass: "ganttGreen"
+                }]
+            },{
+                name: " ",
+                desc: "Tango Menu View",
+                values: [{
+                    from: Date.UTC(2016, 3, 10),
+                    to: Date.UTC(2016, 3, 20),
+                    label: "Tango Connect to Maya",
+                    customClass: "ganttGreen"
+                }]
+            },{
+                name: " ",
+                desc: "Tango Camera View",
+                values: [{
+                    from: Date.UTC(2016, 3, 20),
+                    to: Date.UTC(2016, 3, 30),
+                    label: "Tango Camera View",
+                    customClass: "ganttGreen"
+                }]
+            },{
+                 name: "QA/Final Delivery",
+                 desc: "",
+                 values: [{
+                     from: Date.UTC(2016, 4, 1),
+                     to: Date.UTC(2016, 4, 6),
+                     label: "QA/Final Delivery",
+                     customClass: "ganttOrange"
+                 }]
+            }],
+            scale: "days",
+            minScale: "months",
+            navigate: "scroll",
+            maxScale: "hours",
+            itemsPerPage: 20
+        });
+    });
+</script>
+
+    </body>
+</html>
