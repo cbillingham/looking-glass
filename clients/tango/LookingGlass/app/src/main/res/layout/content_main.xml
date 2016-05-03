@@ -15,5 +15,32 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Welcome to Looking Glass"
+        android:id="@+id/welcome" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/translation_textview"
+        android:layout_below="@+id/welcome"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rotation_textview"
+        android:layout_below="@+id/translation_textview"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activate"
+        android:id="@+id/activation"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/rotation_textview"
+        android:layout_alignParentEnd="true"
+        android:onClick="toggleActivation" />
 </RelativeLayout>
