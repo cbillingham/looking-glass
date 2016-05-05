@@ -42,9 +42,6 @@ io.on 'connection', (socket) ->
     console.log "#{userName} disconnected"
 
   socket.on 'updateCameraPose', (pose) ->
-    quat = new THREE.Quaternion(pose.rotation[0],pose.rotation[1],pose.rotation[2],pose.rotation[3]).normalize()
-    euler = new THREE.Euler().setFromQuaternion(quat)
-    pose.rotation = euler.toArray().splice(0,3)
     maya.updatePose(CAMERA, pose)
 
   socket.on 'error', (error) ->

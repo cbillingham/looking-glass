@@ -43,4 +43,5 @@
         android:layout_below="@+id/rotation_textview"
         android:layout_alignParentEnd="true"
         android:onClick="toggleActivation" />
+
 </RelativeLayout>

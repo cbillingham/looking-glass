@@ -25,9 +25,11 @@ class mayaCommand
     @maya = new mayaPort(port)
     @maya.connect()
 
+  setCamera: (camera) ->
+    @maya.send "python(\"tangoCamera(#{camera})\")"
+
   updatePose: (camera, pose) ->
-    @maya.send  "move -a -ws -wd #{pose.translation[0]*5} #{pose.translation[2]*5} #{pose.translation[1]*-5} #{camera};
-                 rotate -a -os -fo #{pose.rotation[0]-1.5}rad #{pose.rotation[1]}rad #{pose.rotation[2]}rad #{camera};"
+    @maya.send "python(\"tangoUpdateRotate(#{pose.rotation[0]}, #{pose.rotation[1]}, #{pose.rotation[2]}, #{pose.rotation[3]})\")"
 
   disconnect: () ->
     @maya.disconnect()

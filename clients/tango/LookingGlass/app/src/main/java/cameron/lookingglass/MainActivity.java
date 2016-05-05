@@ -9,6 +9,7 @@ import com.google.atap.tangoservice.TangoEvent;
 import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,7 +26,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
-
+import org.rajawali3d.math.Quaternion;
+import org.rajawali3d.math.vector.Vector3;
+import com.projecttango.rajawali.Pose;
+import com.projecttango.rajawali.ScenePoseCalculator;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         // like: mConfig.putBoolean(TangoConfig.KEY_BOOLEAN_DEPTH, true)
         mConfig = mTango.getConfig(TangoConfig.CONFIG_TYPE_CURRENT);
         mConfig.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING, true);
+
     }
 
     @Override
@@ -172,8 +177,9 @@ public class MainActivity extends AppCompatActivity {
                     mTimeToNextUpdate = UPDATE_INTERVAL_MS;
 
                     if (activated) {
+
                         try {
-                            attemptSend(pose);
+                            attemptSend("updateCameraPose",pose);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -211,16 +217,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void attemptSend(TangoPoseData pose) throws JSONException {
+    private void attemptSend(String call, TangoPoseData pose) throws JSONException {
         if (!mSocket.connected()) return;
 
+        Pose openGLPose = ScenePoseCalculator.toOpenGLPose(pose);
+        Vector3 t = openGLPose.getPosition();
+        Quaternion r = openGLPose.getOrientation();
+
         JSONObject data = new JSONObject();
-        data.put("translation", new JSONArray(pose.translation));
-        data.put("rotation", new JSONArray(pose.rotation));
+        data.put("translation", new JSONArray(new double[]{t.x, t.y, t.z}));
+        data.put("rotation", new JSONArray(new double[]{r.x, r.y, r.z, r.w}));
 
         // perform the sending message attempt.
-        mSocket.emit("updateCameraPose", data);
-    };
+        mSocket.emit(call, data);
+    }
+
+    ;
 
     private Emitter.Listener connect = new Emitter.Listener() {
         @Override
@@ -247,4 +259,5 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     };
+
 }
