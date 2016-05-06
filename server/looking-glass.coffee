@@ -4,21 +4,19 @@ io = require 'socket.io'
 mayaCommand = require './maya-control'
 THREE = require('three-js')()
 
-MAYA_PORT = "7505"
+MAYA_PORT = ["7505","7506"]
 
-CAMERA = 'camera1'
-
-camera = 
-  rotation: null
-  translation: null
+camera = ""
 
 app = express()
 server = http.Server(app)
 io = io(server, { serveClient: false })
 
+recording = true;
+
 clients = {}
 
-maya = new mayaCommand(MAYA_PORT)
+maya = new mayaCommand(MAYA_PORT[0])
 
 server.stop = () ->
   for userName of clients
@@ -42,10 +40,47 @@ io.on 'connection', (socket) ->
     console.log "#{userName} disconnected"
 
   socket.on 'updateCameraPose', (pose) ->
-    maya.updatePose(CAMERA, pose)
+    maya.updatePose(pose)
+
+  socket.on 'choose camera', (data) ->
+    console.log "test"
+    maya.setCamera(data.name)
+
+  socket.on 'make camera', (data) ->
+    maya.makeCamera(data.name)
+
+  socket.on 'camera list', () ->
+    data = {cameras:["camera1","camera2"]}
+    socket.emit("new camera list", data)
+
+  socket.on 'record', () ->
+    recording = true;
+    record();
+
+  socket.on 'playback', () ->
+    maya.play()
+
+  socket.on 'stop playback', () ->
+    if recording
+      recording = false;
+    else
+      maya.stop()
+
+  socket.on 'store', () ->
+    maya.store()
 
   socket.on 'error', (error) ->
     console.log error
+
+record = () ->
+  interval = setInterval( () ->
+    if(!recording)
+        clearInterval(interval)
+        return
+
+    maya.increment(camera)
+
+  , 500)
 
 module.exports = server.listen 7500, () ->
   console.log "looking-glass listening on *:7500"

@@ -1,5 +1,28 @@
 package cameron.lookingglass;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.media.Image;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.MenuItem;
+import android.support.v4.app.NavUtils;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.view.View.OnClickListener;
+
+
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.Tango.OnTangoUpdateListener;
 import com.google.atap.tangoservice.TangoConfig;
@@ -10,68 +33,121 @@ import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-
 import org.rajawali3d.math.Quaternion;
 import org.rajawali3d.math.vector.Vector3;
 import com.projecttango.rajawali.Pose;
 import com.projecttango.rajawali.ScenePoseCalculator;
 
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+/**
+ * An example full-screen activity that shows and hides the system UI (i.e.
+ * status bar and navigation/system bar) with user interaction.
+ */
+public class CameraActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String sTranslationFormat = "Translation: %f, %f, %f";
     private static final String sRotationFormat = "Rotation: %f, %f, %f, %f";
 
-    private static boolean activated = false;
-
     private static final int SECS_TO_MILLISECS = 1000;
     private static final double UPDATE_INTERVAL_MS = 100.0;
-
     private double mPreviousTimeStamp;
     private double mTimeToNextUpdate = UPDATE_INTERVAL_MS;
 
     private TextView mTranslationTextView;
     private TextView mRotationTextView;
-    Button b;
+
+    private ImageButton select;
+    private ImageButton toggleTranslate;
+    private ImageButton toggleRotate;
+    private ImageButton backButton;
+    private ImageButton lockButton;
+    private ImageButton recButton;
 
     private Tango mTango;
     private TangoConfig mConfig;
     private boolean mIsTangoServiceConnected;
 
-    private static final int REQUEST_LOGIN = 0;
+    private boolean recording;
+    private boolean active;
+    private boolean sendTranslate;
+    private boolean sendRotate;
+
     private Socket mSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        SocketClient app = new SocketClient();
-        mSocket = app.getSocket();
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT, connect);
-        mSocket.connect();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_camera);
+
+        Intent i = getIntent();
+        mSocket = SocketClient.getGLobalSocket();
+
+        active = false;
+        recording = false;
+        sendTranslate = false;
+        sendRotate = false;
+
+        recButton = (ImageButton) findViewById(R.id.rec_button);
+        select = (ImageButton) findViewById(R.id.select_area);
+        toggleRotate = (ImageButton) findViewById(R.id.select_rotate);
+        toggleTranslate = (ImageButton) findViewById(R.id.select_translate);
+        backButton = (ImageButton) findViewById(R.id.back_button);
+        lockButton = (ImageButton) findViewById(R.id.lock_button);
+
+        backButton.setOnClickListener(new OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        });
+
+        recButton.setOnClickListener(new OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                record();
+            }
+        });
+
+        lockButton.setOnClickListener(new OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                activate();
+            }
+        });
+
+        recButton.setOnClickListener(new OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                record();
+            }
+        });
+
+        recButton.setOnClickListener(new OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                record();
+            }
+        });
 
         mTranslationTextView = (TextView) findViewById(R.id.translation_textview);
         mRotationTextView = (TextView) findViewById(R.id.rotation_textview);
-        b = (Button) findViewById(R.id.activation);
 
         // Instantiate Tango client
         mTango = new Tango(this);
@@ -82,6 +158,35 @@ public class MainActivity extends AppCompatActivity {
         mConfig = mTango.getConfig(TangoConfig.CONFIG_TYPE_CURRENT);
         mConfig.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING, true);
 
+    }
+
+    private void activate() {
+        if (recording) {
+            mSocket.emit("stop playback");
+            recording = false;
+        }
+        if (active) {
+            active = false;
+        }
+        else {
+            mSocket.emit("store");
+            active = true;
+        }
+    }
+
+    private void record() {
+        if (recording) {
+            mSocket.emit("stop playback");
+            recording = false;
+        }
+        else if (active) {
+            mSocket.emit("record");
+            recording = true;
+        }
+        else {
+            mSocket.emit("playback");
+            recording = true;
+        }
     }
 
     @Override
@@ -109,16 +214,6 @@ public class MainActivity extends AppCompatActivity {
                         "Tango Error! Restart the app!", Toast.LENGTH_SHORT)
                         .show();
             }
-        }
-    }
-
-    public void toggleActivation(View v) {
-        if (activated) {
-            activated = false;
-            b.setText("Activate");
-        } else {
-            activated = true;
-            b.setText("Deactivate");
         }
     }
 
@@ -175,8 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mTimeToNextUpdate < 0.0) {
                     mTimeToNextUpdate = UPDATE_INTERVAL_MS;
 
-                    if (activated) {
-
+                    if (active) {
                         try {
                             attemptSend("updateCameraPose",pose);
                         } catch (JSONException e) {
@@ -230,33 +324,5 @@ public class MainActivity extends AppCompatActivity {
         // perform the sending message attempt.
         mSocket.emit(call, data);
     }
-
-    ;
-
-    private Emitter.Listener connect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            JSONObject data = new JSONObject();
-            try {
-                data.put("name", "tango");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            mSocket.emit("connection name", data);
-        }
-    };
-
-    private Emitter.Listener onConnectError = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this.getApplicationContext(),
-                            "Connection Failed", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
 
 }

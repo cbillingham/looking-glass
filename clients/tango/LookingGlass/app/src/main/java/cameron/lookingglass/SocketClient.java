@@ -9,10 +9,13 @@ import java.net.URISyntaxException;
 
 public class SocketClient extends Application {
 
+    static Socket globalmsocket;
+
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket(Constants.CHAT_SERVER_URL);
+            mSocket = IO.socket(LookingGlassServer.getURL());
+            globalmsocket = mSocket;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -21,4 +24,6 @@ public class SocketClient extends Application {
     public Socket getSocket() {
         return mSocket;
     }
+
+    public static Socket getGLobalSocket() {return globalmsocket;};
 }
