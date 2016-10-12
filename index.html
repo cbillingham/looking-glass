@@ -16,27 +16,66 @@
     <div class="wrapper">
       <header>
         <h1>Looking Glass</h1>
-        <p>LMU Computer Science thesis project</p>
+        <p>Mobile device - virtual camera control in Maya</p>
 
-        <p class="view"><a href="https://github.com/cbillingham/402">View the Project on GitHub <small>cbillingham/402</small></a></p>
+        <p class="view"><a href="https://github.com/cbillingham/looking-glass">View the Project on GitHub <small>cbillingham/looking-glass</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/cbillingham/402">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/cbillingham/looking-glass/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/cbillingham/looking-glass/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/cbillingham/looking-glass">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
-        <h1>
-<a id="looking-glass" class="anchor" href="#looking-glass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Looking Glass</h1>
+        <p><img src="/images/logo.png" alt="looking-glass-logo"></p>
 
-<p>LMU Computer Science (CMSI 402) thesis project</p>
+<p>Looking Glass is an Autodesk Maya scripted plugin and Android application that allow a Maya user to use their Project Tango mobile device as a virtual camera capture device. The application shows a live view of the current camera frame as displayed in the Maya viewport. Users are be able to record camera motion in the application by playing the animation scene in real time. The app allows the Maya camera to be controlled by the position and rotation of the device. For example, if the user wants to pan the Maya camera to the left they can turn their device to the left to control the camera in Maya.</p>
+
+<p>Please check out the <a href="https://github.com/cbillingham/looking-glass/wiki">Looking Glass Wiki</a> for development information.</p>
+
+<p><img src="/images/diagram.png" alt="looking-glass-diagram"><br>
+<strong>Figure 1:</strong> The application works by transferring camera data from Project Tango to Autodesk Maya</p>
 
 <h2>
-<a id="description" class="anchor" href="#description" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description</h2>
+<a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Purpose</h2>
 
-<p>Looking Glass is a Maya scripted plugin and Android application that allow a Maya user to use their Project Tango mobile device as a virtual camera capture device. The application shows a live view of the current camera frame as displayed in the Maya viewport. Users are be able to record camera motion in the application by playing the animation scene in real time. The app allows the Maya camera to be controlled by the position and rotation of the device. For example, if the user wants to pan the Maya camera to the left they can turn their device to the left to control the camera in Maya.</p>
+<p>The primary purpose of Looking Glass is to allow individuals and small companies the ability to easily record realistic camera movements without the hassle of expensive and complicated motion capture rooms or other motion tracking technology. It brings the virtual camera directly to your device. Looking Glass aims to create an open-source base for virtual camera capture through mobile devices.</p>
 
-<p>You've reached the landing page which will be updated soon.</p>
+<h2>
+<a id="how-to-use-it" class="anchor" href="#how-to-use-it" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Use It</h2>
+
+<p>A user loads the Maya plugin, which launches a websocket server on the host machine. Launching
+the app on Project Tango tablet brings up the connection screen. After connecting with the host server, the user can manage cameras from the main menu. After selecting a camera, the camera record view allows the user to toggle transformation data, play through the animated keyframes, activate position tracking, and record keyframes based on the positional tracking.</p>
+
+<h2>
+<a id="development-status" class="anchor" href="#development-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development Status</h2>
+
+<p>Currently, Looking Glass will connect to Maya through a Python script loaded into Maya's console. This was a fast prototype to confirm that the implementation would work. With this current version, connecting to cameras and controlling movement work at high frame-rates. However, because Maya is a single-threaded application, recording is slow through the Python implementation. The next step in development is to program an integrated C++ Maya plugin that takes advantage of the MPx::ThreadedDeviceNode class.</p>
+
+<h3>
+<a id="punch-list" class="anchor" href="#punch-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Punch List</h3>
+
+<ul>
+<li>C++ Maya plugin
+
+<ul>
+<li>Makes use of MPx::ThreadedDeviceNode for maximum integration</li>
+</ul>
+</li>
+<li>Redesign current record UI view
+
+<ul>
+<li>Include timeslider feature</li>
+</ul>
+</li>
+<li>Implement live-streaming from Maya viewport
+
+<ul>
+<li>Start with VLC screen capture prototype, then work towards integrated video streamer</li>
+</ul>
+</li>
+</ul>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/cbillingham">cbillingham</a></p>
